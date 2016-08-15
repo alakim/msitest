@@ -1,5 +1,5 @@
 (function($, $H){
 	$(function(){
-		alert("Module initialized!");
+		alert("Module already initialized!");
 	});
 })(jQuery, Html);
