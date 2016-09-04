@@ -8,7 +8,10 @@ var ScenarioView = (function($,$H,$D){
 			" .object":{
 				margin:px(3),
 				padding:px(3),
-				border:"1px solid #ccc"
+				border:"1px solid #ccc",
+				" .name":{
+					"font-weight":"bold"
+				}
 			}
 		}
 	});
@@ -23,7 +26,7 @@ var ScenarioView = (function($,$H,$D){
 					apply(scen.objects, function(obj){
 						var objData = Main.objectIndex()[obj.id];
 						return div({"class":"object"}, 
-							objData.Cells.ObjectShortName, 
+							span({"class":"name"}, objData.ObjectShortName), 
 							$H.format(" - показывать c {0} мин в течение {1} мин.", obj.time, obj.duration)
 						)
 					})

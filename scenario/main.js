@@ -78,7 +78,8 @@ var Main = (function($,$D,$H){
 			    dataType: "json", mimeType: "application/json",
 			    success: function(res){
 				var colNames = $D(res)
-					.map(function(x){return $D.keys(x.Cells);})
+					//.map(function(x){return $D.keys(x.Cells);})
+					.map(function(x){return $D.keys(x);})
 					.flat()
 					.index('x|x')
 					.keys()
@@ -93,7 +94,7 @@ var Main = (function($,$D,$H){
 						apply(res, function(el, i){
 							return tr(
 								apply(colNames, function(nm){
-									return td(el.Cells[nm])
+									return td(el[nm])
 								})
 							)
 						})
@@ -148,6 +149,10 @@ var Main = (function($,$D,$H){
 		};
 	})();
 	
+	function updateObjectIndex(){
+		objectIndex = $D.index(DB.objects, "x|x.global_id");
+	}
+	
 	return {
 		registerModule:function(m){
 			modules.push(m);
@@ -157,9 +162,10 @@ var Main = (function($,$D,$H){
 		},
 		objectIndex: function(){
 			if(!objectIndex) 
-				objectIndex = $D.index(DB.objects, "x|x.Cells.global_id");
+				updateObjectIndex();
 			return objectIndex;
 		},
+		updateObjectIndex: updateObjectIndex,
 		dialog:dialog
 	};
 	

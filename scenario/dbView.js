@@ -10,7 +10,7 @@ var DBView = (function($,$H,$D){
 		pnl.html($H.img({src:"wait.gif"}));
 		function view(res){
 			var colNames = $D(res)
-				.map(function(x){return $D.keys(x.Cells);})
+				.map(function(x){return $D.keys(x);})
 				.flat()
 				.index('x|x')
 				.keys()
@@ -27,9 +27,9 @@ var DBView = (function($,$H,$D){
 						apply(res, function(el, i){
 							return tr(
 								apply(colNames, function(nm, i){
-									var v = el.Cells[nm]
+									var v = el[nm]
 									return td(
-										i==0?span({"class":"link lnkEdit", "data-id":el.Cells.global_id}, v):v
+										i==0?span({"class":"link lnkEdit", "data-id":el.global_id}, v):v
 									)
 								})
 							)
@@ -39,16 +39,16 @@ var DBView = (function($,$H,$D){
 			}})())
 			.find(".lnkEdit").click(function(){
 				var id = $(this).attr("data-id");
-				var obj = $D.select(DB.objects, "x|x.Cells.global_id=="+id)[0];
+				var obj = $D.select(DB.objects, "x|x.global_id=="+id)[0];
 				var dlg = Main.dialog.view();
 				dlg.css({width:"600px"}).html((function(){with($H){
 					return div(
 						table(
-							apply(obj.Cells, function(v, k){
+							apply(obj, function(v, k){
 								return tr(
 									td({"class":"fieldName"}, k),
 									td(
-										input({type:"text", value:v})
+										input({type:"text", "class":"field", "data-fld":k, value:v})
 									)
 								);
 							})
@@ -60,8 +60,13 @@ var DBView = (function($,$H,$D){
 					);
 				}})())
 				.find(".btSave").click(function(){
-					alert("Данные сохранены");
+					dlg.find("input.field").each(function(i, el){el=$(el);
+						var fldNm = el.attr("data-fld");
+						obj[fldNm] = el.val();
+					});
+					//alert("Данные сохранены");
 					Main.dialog.hide();
+					viewObjects();
 				}).end()
 				.find(".btCancel").click(Main.dialog.hide).end();
 			}).end();
