@@ -26,14 +26,45 @@ var DBView = (function($,$H,$D){
 						),
 						apply(res, function(el, i){
 							return tr(
-								apply(colNames, function(nm){
-									return td(el.Cells[nm])
+								apply(colNames, function(nm, i){
+									var v = el.Cells[nm]
+									return td(
+										i==0?span({"class":"link lnkEdit", "data-id":el.Cells.global_id}, v):v
+									)
 								})
 							)
 						})
 					)
 				);
-			}})());
+			}})())
+			.find(".lnkEdit").click(function(){
+				var id = $(this).attr("data-id");
+				var obj = $D.select(DB.objects, "x|x.Cells.global_id=="+id)[0];
+				var dlg = Main.dialog.view();
+				dlg.css({width:"600px"}).html((function(){with($H){
+					return div(
+						table(
+							apply(obj.Cells, function(v, k){
+								return tr(
+									td({"class":"fieldName"}, k),
+									td(
+										input({type:"text", value:v})
+									)
+								);
+							})
+						),
+						div({"class":"pnlButtons"},
+							input({type:"button", value:"Сохранить", "class":"btSave"}),
+							input({type:"button", value:"Отмена", "class":"btCancel"})
+						)
+					);
+				}})())
+				.find(".btSave").click(function(){
+					alert("Данные сохранены");
+					Main.dialog.hide();
+				}).end()
+				.find(".btCancel").click(Main.dialog.hide).end();
+			}).end();
 		}
 		view(DB.objects);
 		pnl.fadeIn();

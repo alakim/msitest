@@ -12,6 +12,7 @@ var Main = (function($,$D,$H){
 					"text-decoration":"underline"
 				}
 			},
+			" .fieldName":{"font-weight":"bold"},
 			" .pnlMenu":{
 				padding:px(5, 10),
 				margin:px(10, 5),
@@ -53,7 +54,11 @@ var Main = (function($,$D,$H){
 					border:"1px solid #888",
 					padding:px(10),
 					margin:"80px auto",
-					position:"relative"
+					position:"relative",
+					" .pnlButtons":{
+						"text-align":"center",
+						padding:px(3, 20)
+					}
 				}
 			}
 		}
@@ -115,14 +120,17 @@ var Main = (function($,$D,$H){
 				pnl = $((function(){with($H){
 					return div({"class":"dialogWindow"},
 						div({"class":"dialogBg"}),
-						div({"class":"dialogPanel"},
-							input({type:"button", "class":"btCancel", value:"Закрыть"})
-						)
+						div({"class":"dialogPanel"})
 					);
 				}})());
 				$("body").append(pnl);
 				pnl = $(".dialogPanel");
-				pnl.find(".btCancel").click(function(){
+				pnl.css("width", "").html(
+					$H.markup(
+						$H.p("Dialog Panel"),
+						$H.input({type:"button", "class":"btCancel", value:"Закрыть"})
+					)
+				).find(".btCancel").click(function(){
 					Main.dialog.hide();
 				});
 			}
@@ -131,7 +139,7 @@ var Main = (function($,$D,$H){
 			return pnl;
 		}
 		function hide(){
-			$(".dialogWindow").fadeOut();
+			$(".dialogWindow").hide();
 		}
 		
 		return {
