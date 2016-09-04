@@ -11,7 +11,7 @@ var Datasources = (function($,$H,$D){
 		    dataType: "json", mimeType: "application/json",
 		    success: function(res){
 			pnl.html((function(){with($H){
-				var objIndex = $D.index(DB.objects, "x|x.Cells.global_id");
+				//var objIndex = $D.index(DB.objects, "x|x.Cells.global_id");
 				return table({border:1, cellpadding:3, cellspacing:0},
 					tr(
 						apply(colNames, function(nm){
@@ -21,7 +21,7 @@ var Datasources = (function($,$H,$D){
 						td("Действие")
 					),
 					apply(res, function(el, i){
-						var existingObject = objIndex[el.Cells.global_id];
+						var existingObject = Main.objectIndex()[el.Cells.global_id];
 						//console.log(el.Id, el.Cells.global_id, existingObject.Id, existingObject.Cells.global_id);
 						var conflictsDetected = existingObject && $D(el.Cells)
 							.select(function(c, nm){
@@ -116,11 +116,13 @@ var Datasources = (function($,$H,$D){
 				return span({"class":"link lnkDatasources"}, "Внешние источники данных");
 			}})())
 			.find(".lnkDatasources").click(function(){
+				Main.hideTabPanels();
 				displayList();
 			}).end();
-			$(".pnlMain").append($H.div({"class":"pnlDatasources", style:"display:none;"}))
+			$(".pnlMain").append($H.div({"class":"tabPanel pnlDatasources", style:"display:none;"}))
 		},
 		view: function(){
+			Main.hideTabPanels();
 			displayList();
 		}
 	};

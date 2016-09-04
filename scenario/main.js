@@ -15,7 +15,10 @@ var Main = (function($,$D,$H){
 			" .pnlMenu":{
 				padding:px(5, 10),
 				margin:px(10, 5),
-				"border-bottom":"1px solid #ccc"
+				"border-bottom":"1px solid #ccc",
+				" .link":{
+					padding:px(0, 10)
+				}
 			},
 			" .pnlMain":{
 				border:"1px solid #ccc",
@@ -83,9 +86,19 @@ var Main = (function($,$D,$H){
 		});
 	});
 	
+	var objectIndex;
+	
 	return {
 		registerModule:function(m){
 			modules.push(m);
+		},
+		hideTabPanels: function(){
+			$(".pnlMain .tabPanel").hide();
+		},
+		objectIndex: function(){
+			if(!objectIndex) 
+				objectIndex = $D.index(DB.objects, "x|x.Cells.global_id");
+			return objectIndex;
 		}
 	};
 	
