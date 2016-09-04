@@ -1,12 +1,41 @@
-(function($,$D,$H){
+var Main = (function($,$D,$H){
 	var px = $H.unit("px");
 	$H.writeStylesheet({
 		body:{
 			"font-family":"Vedana, Arial, Sans-Serif",
-			"font-Size":px(14)
+			"font-Size":px(14),
+			" .link":{
+				color:"#00a",
+				cursor:"pointer",
+				":hover":{
+					color:"#f00",
+					"text-decoration":"underline"
+				}
+			},
+			" .pnlMenu":{
+				padding:px(5, 10),
+				margin:px(10, 5),
+				"border-bottom":"1px solid #ccc"
+			},
+			" .pnlMain":{
+				border:"1px solid #ccc",
+				"min-height":px(400),
+				padding:px(5)
+			},
+			" .success":{
+				color:"#080"
+			},
+			" .error":{
+				color:"#f00"
+			},
+			" div.error":{
+				padding:px(5),
+				background:"#ffe",
+				border:"1px solid #f00"
+			}
 		}
 	});
-	$(function(){
+	function viewData(){
 		$(".pnlMain").html((function(){with($H){
 			return div(
 				div(input({type:"button", "class":"btLoadJSON", value:"Load JSON"})),
@@ -45,6 +74,19 @@
 			    }
 			});
 		}).end();
+	}
+	
+	var modules = [];
+	$(function(){
+		$D.each(modules, function(m){
+			m.init();
+		});
 	});
+	
+	return {
+		registerModule:function(m){
+			modules.push(m);
+		}
+	};
 	
 })(jQuery, JDB, Html);
