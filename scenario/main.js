@@ -35,6 +35,26 @@ var Main = (function($,$D,$H){
 				padding:px(5),
 				background:"#ffe",
 				border:"1px solid #f00"
+			},
+			" .dialogWindow":{
+				width:"100%", height:"100%",
+				position:"absolute",
+				top:px(0), left:px(0),
+				" .dialogBg":{
+					width:"100%", height:"100%",
+					background:"#aaa",
+					opacity:.7,
+					position:"fixed"
+				},
+				" .dialogPanel":{
+					width:px(500),
+					"min-height":px(300),
+					background:"#fff",
+					border:"1px solid #888",
+					padding:px(10),
+					margin:"80px auto",
+					position:"relative"
+				}
 			}
 		}
 	});
@@ -88,6 +108,38 @@ var Main = (function($,$D,$H){
 	
 	var objectIndex;
 	
+	var dialog = (function(){
+		function view(){
+			var pnl = $(".dialogPanel");
+			if(!pnl.length){
+				pnl = $((function(){with($H){
+					return div({"class":"dialogWindow"},
+						div({"class":"dialogBg"}),
+						div({"class":"dialogPanel"},
+							input({type:"button", "class":"btCancel", value:"Закрыть"})
+						)
+					);
+				}})());
+				$("body").append(pnl);
+				pnl = $(".dialogPanel");
+				pnl.find(".btCancel").click(function(){
+					Main.dialog.hide();
+				});
+			}
+			
+			$(".dialogWindow").fadeIn();
+			return pnl;
+		}
+		function hide(){
+			$(".dialogWindow").fadeOut();
+		}
+		
+		return {
+			view: view,
+			hide: hide
+		};
+	})();
+	
 	return {
 		registerModule:function(m){
 			modules.push(m);
@@ -99,7 +151,8 @@ var Main = (function($,$D,$H){
 			if(!objectIndex) 
 				objectIndex = $D.index(DB.objects, "x|x.Cells.global_id");
 			return objectIndex;
-		}
+		},
+		dialog:dialog
 	};
 	
 })(jQuery, JDB, Html);

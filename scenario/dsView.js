@@ -36,11 +36,19 @@ var Datasources = (function($,$H,$D){
 								return td(el.Cells[nm])
 							}),
 							td(input(ckBoxAttr)),
-							td(conflictsDetected?span({"class":"error"}, "Обнаружены конфликты"):span({"class":"success"}, "загрузить"))
+							td(conflictsDetected?markup(
+									span({"class":"error"}, "Обнаружены конфликты"), " ",
+									span({"class":"link lnkConflict"}, "[подробнее]")
+								)
+								:span({"class":"success"}, "загрузить")
+							)
 						)
 					})
 				);
-			}})());
+			}})())
+			.find(".lnkConflict").click(function(){
+				Main.dialog.view();
+			}).end();
 		    },
 		    error:function(){displayError("Ошибка загрузки файла "+ds.file);}
 		});
