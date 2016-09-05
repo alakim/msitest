@@ -1,0 +1,22 @@
+<html>
+  <head>
+	<meta charset="utf-8"/>
+    <title>Window Events</title>
+    <style></style>
+<script type="text/javascript" src="http://tools.limulus.ru/jdb/lib/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	$(window).focus(function(){
+		console.log("ON Focus");
+	});
+	$(window).blur(function(){
+		console.log("Blur");
+	});
+});
+</script>
+  </head>
+  <body>
+<h1>Window Events</h1>
+<div id="out"></div>
+</body>
+</html>
