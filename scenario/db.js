@@ -30,7 +30,7 @@ var DB = (function($D){
 				title:"Детские площадки",
 				duration:60,
 				objects:[
-					{id:13898536, time:10, duration:2},
+					{id:13898536, time:16, duration:2},
 					{id:13902469, time:12, duration:2}
 				]
 			}
