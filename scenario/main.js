@@ -56,9 +56,14 @@ var Main = (function($,$D,$H){
 					margin:"80px auto",
 					position:"relative",
 					" .pnlButtons":{
-						"text-align":"center",
-						padding:px(3, 20)
+						"text-align":"center"
 					}
+				}
+			},
+			" .pnlButtons":{
+				padding:px(3, 20),
+				" input[type=button]":{
+					margin:px(3, 5)
 				}
 			}
 		}
