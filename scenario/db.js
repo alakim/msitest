@@ -20,6 +20,24 @@ var DB = (function($D){
 				WebSite:"Веб-сайт"
 			}
 		},
+		objectGroups:{
+			rules: {
+				svao:{
+					name:"СВАО",
+					select:function(obj){return obj.AdmArea=="Северо-Восточный административный округ"}
+				},
+				eatery:{
+					name:"Общепит",
+					select:function(obj){return obj.ObjectHasEatery=="да"},
+					children:{
+						sokolniki:{
+							"name":"Сокольники",
+							select: function(obj){return obj.District=="район Сокольники"}
+						}
+					}
+				}
+			}
+		},
 		objects:[
 			{"global_id":13898536,"Photo":["4989cb56-fdf4-462e-8131-bb2a973ba04a"],"ObjectShortName":"ПК № 27 планируемый к созданию ЛЗ «Лианозовский»","SportZoneName":"веревочный городок","AdmArea":"Северо-Восточный административный округ","District":"район Лианозово","Address":"Угличская улица, дом 11, строение 1","Email":"old_dir-svao@eco.mos.ru","WebSite":null,"HelpPhone":null,"ObjectHasEquipmentRental":"нет","ObjectHasTechService":"нет","ObjectHasDressingRoom":"нет","ObjectHasEatery":"нет","ObjectHasToilet":"да","ObjectHasWifi":"нет","ObjectHasCashMachine":"нет","ObjectHasFirstAidPost":"нет","SportZoneWorkingHours":[{"DayOfWeek":"понедельник","Hours":"08:00-22:00"},{"DayOfWeek":"вторник","Hours":"08:00-22:00"},{"DayOfWeek":"среда","Hours":"08:00-22:00"},{"DayOfWeek":"четверг","Hours":"08:00-22:00"},{"DayOfWeek":"пятница","Hours":"08:00-22:00"},{"DayOfWeek":"суббота","Hours":"08:00-22:00"},{"DayOfWeek":"воскресенье","Hours":"08:00-22:00"}],"SportZoneClarificationOfWorkingHours":null,"SportZoneLighting":"освещение лампами накаливания","SportZonePaid":null,"SportZonePaidComments":null,"SportZoneHasMusic":"нет","SportZoneDisabilityFriendly":"не приспособлен","SportZoneService":[],"geoData":{"type":"Point","coordinates":[37.570283816396284,55.89989402918847]}},
 			{"global_id":13902469,"Photo":["fd00f089-1a0a-45fb-bfa1-be57fc677a2b"],"ObjectShortName":"Измайловский Парк культуры и отдыха","SportZoneName":"веревочный городок","AdmArea":"Восточный административный округ","District":"район Измайлово","Address":"аллея Большого Круга, дом 7","Email":"izmpark@mail.ru","WebSite":"izmailovsky-park.ru","HelpPhone":null,"ObjectHasEquipmentRental":"да","ObjectHasTechService":"да","ObjectHasDressingRoom":"да","ObjectHasEatery":"да","ObjectHasToilet":"да","ObjectHasWifi":"да","ObjectHasCashMachine":"нет","ObjectHasFirstAidPost":"нет","SportZoneWorkingHours":[{"DayOfWeek":"понедельник","Hours":"11:00-20:00"},{"DayOfWeek":"вторник","Hours":"11:00-20:00"},{"DayOfWeek":"среда","Hours":"11:00-20:00"},{"DayOfWeek":"четверг","Hours":"11:00-20:00"},{"DayOfWeek":"пятница","Hours":"11:00-20:00"},{"DayOfWeek":"суббота","Hours":"10:00-20:00"},{"DayOfWeek":"воскресенье","Hours":"10:00-20:00"}],"SportZoneClarificationOfWorkingHours":null,"SportZoneLighting":"смешанное освещение","SportZonePaid":null,"SportZonePaidComments":"300 - 450 руб.","SportZoneHasMusic":"да","SportZoneService":[],"geoData":{"type":"Point","coordinates":[37.75305820168144,55.78204861575169]}},

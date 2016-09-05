@@ -1,34 +1,46 @@
 var ObjectGroupsView = (function($, $H, $D){
+	var px = $H.unit("px");
 	$H.writeStylesheet({
 		" .pnlGrpView":{
-			" .name":{"font-weight":"bold"}
+			" .name":{"font-weight":"bold"},
+			" .children":{
+				margin:px(3, 25)
+			}
 		}
 	});
 	function viewGroups(){
 		var pnl = $(".pnlGrpView");
 		var groups = ObjectGroups.getGroups();
 		var grpIndex = $D.index(groups, "id");
-		pnl.html((function(){with($H){
-			return div(
-				apply(groups, function(grp){
-					return div(
-						div(span({"class":"link lnkGrp", "data-grp":grp.id}, grp.name)),
-						div({"class":"grpObjects"})
-					);
-				})
-			);
-		}})())
-		.find(".lnkGrp").click(function(){
-			var grpID = $(this).attr("data-grp");
-			var grp = grpIndex[grpID];
-			$(this).parent().parent().find(".grpObjects").html((function(){with($H){
-				return ul(
-					apply(grp.objects, function(obj){
-						return li(span({"class":"name"}, obj.ObjectShortName), " - ", obj.Address)
+		
+		function groupsListTemplate(groups){with($H){
+				return div(
+					apply(groups, function(grp){
+						return div(
+							div(span({"class":"link lnkGrp", "data-grp":grp.id}, grp.name)),
+							div({"class":"grpObjects"}),
+							grp.children?div({"class":"children"},
+								groupsListTemplate(grp.children)
+							):null
+						);
 					})
 				);
-			}})());
-		}).end();
+		}}
+		
+		pnl.html(groupsListTemplate(groups))
+			.find(".lnkGrp").click(function(){
+				var grpID = $(this).attr("data-grp");
+				var grp = grpIndex[grpID];
+				$(this).parent().parent().find(".grpObjects").html((function(){with($H){
+					return markup(
+						ul(
+							apply(grp.objects, function(obj){
+								return li(span({"class":"name"}, obj.ObjectShortName), " - ", obj.Address)
+							})
+						)
+					);
+				}})());
+			}).end();
 		
 		pnl.fadeIn();
 	}
