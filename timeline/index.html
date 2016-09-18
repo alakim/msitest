@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Timeline Test Page</title>
+	<style type="text/css">
+		body{
+			font-family:Verdana, Arial, Sans-Serif;
+			font-size: 12px;
+		}
+		#pnlTimeline{
+			border: 1px solid #ccc;
+		}
+	</style>
+	<script src="lib/jquery-1.11.0.min.js"></script>
+	<script src="lib/html.js"></script>
+	<script src="lib/jdb.js"></script>
+	<script src="lib/snap.svg-min.js"></script>
+	<script src="timeline.js"></script>
+	<script>
+		var scenario = [
+			{name:"Высотное здание", address:"пл.Восстания, д.1", time:5, duration:2, usr:{y:30}},
+			{name:"Жилой дом", address:"ул. Красносельская, д.5", time:7, duration:3, usr:{y:60}},
+			{name:"Торговый центр", address:"ул. Краснопролетарская, д.11", time:2, duration:4, usr:{y:90}},
+			{name:"Парковка", address:"ул. Краснопрудная, д.15", time:10, duration:1, usr:{y:30}}
+		];
+		$(function(){
+			Timeline.init(scenario);
+		});
+	</script>
+
+</head>
+<body>
+	<h1>Timeline Test Page</h1>
+	<svg id="pnlTimeline" width="800" height="300"></svg>
+</body>
+</html>
