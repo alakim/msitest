@@ -12,6 +12,7 @@ var Timeline = (function($D){
 			.drag(); // обработчики не передаем, чтобы сохранить дефолтное поведение
 
 		// Более аккуратная привязка обработчиков - дефолтное поведение сохраняется
+		// см. http://dmitry.baranovskiy.com/eve/eve-src.html - ln.130 
 		eve.on('snap.drag.start.' + objView.id, function(e) {
 		  console.log("start: ", e);
 		});
