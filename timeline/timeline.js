@@ -25,11 +25,15 @@ var Timeline = (function($D){
 						transform: this.data('origTransform') + (this.data('origTransform') ? "T" : "t") + [dx, dy*0]
 					});
 					var bw = +viewBody.attr("width");
+					//console.log(bw, dx);
 					var diff = x - this.data("x0");
 					var pos = this.data("curPos")+dx;
+					// console.log(dx, diff);
 
 					//viewBody.attr({width: bw+diff});
-					viewBody.attr({width:pos - viewBody.attr("x")});
+					//viewBody.attr({width:pos - viewBody.attr("x")});
+					viewBody.attr({width:this.data("curW")+dx});
+					// viewBody.attr({width: dx+bw});
 					// console.log(bw, dx, bw+dx, diff, bw+diff);
 					e.stopPropagation();
 				},
@@ -37,6 +41,7 @@ var Timeline = (function($D){
 					this.data('origTransform', this.transform().local );
 					this.data("x0", x);
 					this.data("curPos", +this.attr("x"));
+					this.data("curW", +this.attr("x") - viewBody.attr("x"));
 					e.stopPropagation();
 				},
 				function(e){
