@@ -26,12 +26,14 @@
 		];
 		$(function(){
 			Timeline.init(scenario);
+			$("#btRefresh").click(Timeline.refresh);
 		});
 	</script>
 
 </head>
 <body>
 	<h1>Timeline Test Page</h1>
+	<div><input type="button" id="btRefresh" value="Refresh"/></div>
 	<svg id="pnlTimeline" width="800" height="300"></svg>
 </body>
 </html>
