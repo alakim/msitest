@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>JDB Unit Tests</title>
+<title>JDB 3.0.1 Unit Tests</title>
 <script type="text/javascript" src="../tools/jsUnit_utf8.js"></script>
 <script type="text/javascript" src="jdb.js"></script>
 <script type="text/javascript">
@@ -11,6 +11,7 @@ JDB = JDB.version(version);
 
 new JSUnit.Test("Подключение модуля JDB", "Configuration").run = function(){
 	this.assert(typeof(JDB), "function");
+	this.assert(JDB.compatible(), version);
 }
 
 new JSUnit.Test("compareVersions", "Configuration").run = function(){
@@ -635,13 +636,13 @@ new JSUnit.Test("Dictionary", "Containers").run = function(){
 }
 
 function init(){
-	document.getElementById("versionPanel").innerHTML = JDB.version()+" as "+version;
+	document.getElementById("versionPanel").innerHTML = JDB.version()+" as "+JDB.compatible();
 	JSUnit.init();
 }
 </script>
 </head>
 <body onload="init()">
-	<h1>JDB Unit Tests</h1>
+	<h1>JDB 3.0.1 Unit Tests</h1>
 	<p>JDB - модуль для операций над коллекциями в формате JSON</p>
 	<p>JDB v.<span id="versionPanel"></span></p>
 	<div id="testContainer" style="display:none;"></div>

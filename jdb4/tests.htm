@@ -41,6 +41,28 @@ new JSUnit.Test("map", "Simple Non-monadic").run = function(){
 		JDB.map({a:5, b:4, c:3}, "x,nm,idx|{v:x,id:idx}"),
 		{a:{v:5, id:0}, b:{v:4, id:1}, c:{v:3, id:2}}
 	);
+	
+	
+	var arr0 = [1, 2, 3];
+	var arr1 = JDB.map(arr0, function(x){return x*2;})
+	this.assert(arr1, [2, 4, 6], "Error 2.1");
+	this.assert(arr0, [1, 2, 3], "Error 2.2");
+	
+	var obj0 = {x:1, y:2};
+	var obj1 = JDB.map(obj0, function(x){return x*2;});
+	this.assert(obj0, {x:1, y:2});
+	this.assert(obj1, {x:2, y:4});
+}
+new JSUnit.Test("Map", "Simple Non-monadic").run = function(){
+	var arr0 = [1, 2, 3];
+	var arr1 = JDB.Map(arr0, function(x){return x*2;})
+	this.assert(arr0, [2, 4, 6], "Error 1");
+	this.assert(arr1, [2, 4, 6], "Error 2");
+	
+	var obj0 = {x:1, y:2};
+	var obj1 = JDB.Map(obj0, function(x){return x*2;});
+	this.assert(obj0, {x:2, y:4});
+	this.assert(obj1, {x:2, y:4});
 }
 
 new JSUnit.Test("each", "Simple Non-monadic").run = function(){
@@ -48,12 +70,14 @@ new JSUnit.Test("each", "Simple Non-monadic").run = function(){
 	var log = [];
 	JDB.each(coll, function(e, i){log.push(i+":"+e);});
 	this.assert(log, ["0:1", "1:2", "2:3"]);
+	this.assert(coll, [1,2,3]);
 }
 new JSUnit.Test("each on object", "Simple Non-monadic").run = function(){
 	var coll = {a:10, b:20, c:30};
 	var log = [];
 	JDB.each(coll, function(v, k, idx){log.push(idx+":"+k+"="+v);});
 	this.assert(log, ["0:a=10", "1:b=20", "2:c=30"]);
+	this.assert(coll, {a:10, b:20, c:30});
 }
 
 new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
@@ -61,34 +85,51 @@ new JSUnit.Test("aggregate", "Simple Non-monadic").run = function(){
 	var aggr = JDB.aggregate(coll, 0, function(e, aggr){return aggr + e.x;});
 	var aggr = JDB.aggregate(coll, 0, "e,aggr|aggr+e.x");
 	this.assert(aggr, 6, "Error lambda");
+	this.assert(coll, [{x:1}, {x:2}, {x:3}]);
 }
 
 
 new JSUnit.Test("select", "Simple Non-monadic").run = function(){
-	this.assert(JDB.select([1, 2, 3], function(x){return x<3;}), [1, 2]);
-	this.assert(JDB.select({x:1, y:2, z:3}, function(x){return x<3;}), {x:1, y:2});
-	this.assert(JDB.select({x:1, y:2, z:3}, "x|x<3"), {x:1, y:2}, "Error lambda");
+	var arr = [1, 2, 3];
+	this.assert(JDB.select(arr, function(x){return x<3;}), [1, 2]);
+	this.assert(arr, [1, 2, 3]);
+	
+	var obj = {x:1, y:2, z:3};
+	this.assert(JDB.select(obj, function(x){return x<3;}), {x:1, y:2});
+	this.assert(JDB.select(obj, "x|x<3"), {x:1, y:2}, "Error lambda");
+	this.assert(obj, {x:1, y:2, z:3});
 }
 
 new JSUnit.Test("first", "Simple Non-monadic").run = function(){
-	this.assert(JDB.first([1, 2, 3]), [1]);
-	this.assert(JDB.first([1, 2, 3], 0), [1]);
-	this.assert(JDB.first([1, 2, 3], 1), [1]);
-	this.assert(JDB.first([1, 2, 3], 2), [1, 2]);
-	this.assert(JDB.first([1, 2, 3], 3), [1, 2, 3]);
-	this.assert(JDB.first([1, 2, 3], 4), [1, 2, 3]);
+	var arr = [1, 2, 3];
+	this.assert(JDB.first(arr), [1]);
+	this.assert(JDB.first(arr, 0), [1]);
+	this.assert(JDB.first(arr, 1), [1]);
+	this.assert(JDB.first(arr, 2), [1, 2]);
+	this.assert(JDB.first(arr, 3), [1, 2, 3]);
+	this.assert(JDB.first(arr, 4), [1, 2, 3]);
+	
+	this.assert(arr, [1, 2, 3]);
 }
 
 new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
-	this.assert(JDB.flat(
-		[
-			[1, 2, 3],
-			4,
-			[5, 6, 7],
-			8,
-			[9]
-		]
-	), [1, 2, 3, 4, 5, 6, 7, 8, 9], "Error 1");
+	var arr = [
+		[1, 2, 3],
+		4,
+		[5, 6, 7],
+		8,
+		[9]
+	];
+	this.assert(JDB.flat(arr), [1, 2, 3, 4, 5, 6, 7, 8, 9], "Error 1");
+	
+	this.assert(arr, [
+		[1, 2, 3],
+		4,
+		[5, 6, 7],
+		8,
+		[9]
+	]);
+	
 	this.assert(JDB.flat([
 		[
 			{x:21, y:31},
@@ -104,6 +145,7 @@ new JSUnit.Test("flat", "Simple Non-monadic").run = function(){
 			{x:41, y:41},
 			{x:42, y:43}
 	], "Error 2");
+	
 }
 
 new JSUnit.Test("flat 1", "Simple Non-monadic", false).run = function(){
@@ -139,12 +181,15 @@ new JSUnit.Test("flat 3", "Simple Non-monadic", false).run = function(){
 }
 
 new JSUnit.Test("page", "Simple Non-monadic").run = function(){
-	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 0), []);
-	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 1), [1, 2, 3]);
-	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 2), [4, 5, 6]);
-	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 3), [7, 8, 9]);
-	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 4), [10]);
-	this.assert(JDB.page([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 5), []);
+	var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	this.assert(JDB.page(arr, 3, 0), []);
+	this.assert(JDB.page(arr, 3, 1), [1, 2, 3]);
+	this.assert(JDB.page(arr, 3, 2), [4, 5, 6]);
+	this.assert(JDB.page(arr, 3, 3), [7, 8, 9]);
+	this.assert(JDB.page(arr, 3, 4), [10]);
+	this.assert(JDB.page(arr, 3, 5), []);
+	
+	this.assert(arr, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 }
 
 new JSUnit.Test("index", "Simple Non-monadic").run = function(){
@@ -171,11 +216,18 @@ new JSUnit.Test("index", "Simple Non-monadic").run = function(){
 	this.assert(JDB.index("a;b;c".split(";"), function(x){return x;}, function(x, i){return i;}), {a:0, b:1, c:2});
 	this.assert(JDB.index("a;b;c".split(";"), "x|x", "x,i|i"), {a:0, b:1, c:2}, "Error lambda 2");
 	this.assert(JDB.index(["a", "b", "c", "a"]), {a:"a", b:"b", c:"c"});
+	
+	this.assert(coll, [
+		{id:1, nm:"John"},
+		{id:2, nm:"Phill"},
+		{id:3, nm:"James"}
+	]);
 }
 
 new JSUnit.Test("keys", "Simple Non-monadic").run = function(){
 	var obj = {x:3, y:5, z:'slls'};
 	this.assert(JDB.keys(obj), ["x", "y", "z"]);
+	this.assert(obj, {x:3, y:5, z:'slls'});
 }
 
 new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){
@@ -205,15 +257,21 @@ new JSUnit.Test("groupBy", "Simple Non-monadic").run = function(){
 		],
 		200:[{salary:200, nm:"Phill"}],
 	}, "Error lambda");
+	
+	this.assert(coll, [
+		{salary:100, nm:"John"},
+		{salary:200, nm:"Phill"},
+		{salary:100, nm:"James"}
+	]);
 }
 
-new JSUnit.Test("extend", "Simple Non-monadic").run = function(){
+new JSUnit.Test("Extend", "Simple Non-monadic").run = function(){
 	var coll = {
 		1:"John",
 		2:"Phill",
 		3:"James"
 	};
-	JDB.extend(coll, {
+	JDB.Extend(coll, {
 		4:"George",
 		5:"Paul"
 	});
@@ -226,13 +284,13 @@ new JSUnit.Test("extend", "Simple Non-monadic").run = function(){
 	});
 }
 
-new JSUnit.Test("extend deep", "Simple Non-monadic").run = function(){
+new JSUnit.Test("Extend deep", "Simple Non-monadic").run = function(){
 	var coll = {
 		1:{name:"John", salary:300},
 		2:{name:"Phill", salary:500},
 		3:{name:"James", salary:400}
 	};
-	JDB.extend(coll, {
+	JDB.Extend(coll, {
 		1:{salary:600}
 	}, true);
 	this.assert(coll, {
@@ -246,6 +304,7 @@ new JSUnit.Test("concat", "Simple Non-monadic").run = function(){
 	var coll = [1, 2, 3];
 	this.assert(JDB.concat(coll, [4, 5]), [1, 2, 3, 4, 5]);
 	this.assert(JDB.concat(coll, JDB([4, 5])), [1, 2, 3, 4, 5]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("toArray", "Simple Non-monadic").run = function(){
@@ -268,6 +327,7 @@ new JSUnit.Test("toArray", "Simple Non-monadic").run = function(){
 		{id:2, nm:"Phill"},
 		{id:3, nm:"James"}
 	]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("treeToArray", "Simple Non-monadic").run = function(){
@@ -290,6 +350,7 @@ new JSUnit.Test("treeToArray", "Simple Non-monadic").run = function(){
 	this.assert(JDB.treeToArray(tree, "children", "nm"), [
 		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
 	]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("sort", "Simple Non-monadic").run = function(){
@@ -315,11 +376,13 @@ new JSUnit.Test("sort", "Simple Non-monadic").run = function(){
 		{salary:100, nm:"John"},
 		{salary:200, nm:"Phill"}
 	]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("reverse", "Simple Non-monadic").run = function(){
 	var coll = [1, 2, 3, 4];
 	this.assert(JDB.reverse(coll), [4, 3, 2, 1]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("raw", "Basic Monadic").run = function(){
@@ -327,12 +390,14 @@ new JSUnit.Test("raw", "Basic Monadic").run = function(){
 	var d = JDB(coll);
 	this.assert(d.raw(), coll);
 	this.assert(JDB(d).raw(), coll); // повторная обертка не приводит к ошибкам
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("trace", "Basic Monadic").run = function(){
 	alert("Проверь вывод в консоли массива [1, 2, 3]!");
 	var coll = [1, 2, 3];
 	this.assert(JDB(coll).trace("Тестовый вывод").raw(), coll);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("map", "Basic Monadic").run = function(){
@@ -368,6 +433,7 @@ new JSUnit.Test("map", "Basic Monadic").run = function(){
 		JDB({a:5, b:4, c:3}).map("x,nm,idx|{v:x,id:idx}").raw(),
 		{a:{v:5, id:0}, b:{v:4, id:1}, c:{v:3, id:2}}
 	);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("each", "Basic Monadic").run = function(){
@@ -377,22 +443,26 @@ new JSUnit.Test("each", "Basic Monadic").run = function(){
 	log = [];
 	this.assert(JDB({x:1, y:2, z:3}).each(function(x, n){log.push(n+":"+x);}).raw(), {x:1, y:2, z:3});
 	this.assert(log, ["x:1", "y:2", "z:3"]);
+	this.assert(true, false, "Проверить мутацию");
 }
 new JSUnit.Test("each on object", "Basic Monadic").run = function(){
 	var coll = {a:10, b:20, c:30};
 	var log = [];
 	this.assert(JDB(coll).each(function(v, k, idx){log.push(idx+":"+k+"="+v);}).raw(), coll);
 	this.assert(log, ["0:a=10", "1:b=20", "2:c=30"]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("aggregate", "Basic Monadic").run = function(){
 	var coll = [{x:1}, {x:2}, {x:3}];
 	var aggr = JDB(coll).aggregate(0, function(e, aggr){return aggr + e.x;});
 	this.assert(aggr, 6);
+	this.assert(true, false, "Проверить мутацию");
 }
 new JSUnit.Test("select", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3]).select(function(x){return x<3;}).raw(), [1, 2]);
 	this.assert(JDB({x:1, y:2, z:3}).select(function(x){return x<3;}).raw(), {x:1, y:2});
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("first", "Basic Monadic").run = function(){
@@ -402,6 +472,7 @@ new JSUnit.Test("first", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3]).first(2).raw(), [1, 2]);
 	this.assert(JDB([1, 2, 3]).first(3).raw(), [1, 2, 3]);
 	this.assert(JDB([1, 2, 3]).first(4).raw(), [1, 2, 3]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("flat", "Basic Monadic").run = function(){
@@ -429,12 +500,14 @@ new JSUnit.Test("flat", "Basic Monadic").run = function(){
 			{x:41, y:41},
 			{x:42, y:43}
 	], "Error 2");
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("flat 1", "Basic Monadic", false).run = function(){
 	this.assert(JDB(3).flat().raw(), 3, "Err 1");
 	this.assert(JDB([1, 2, 3]).flat().raw(), [1, 2, 3], "Err 2");
 	this.assert(JDB({a:1, b:2, c:3}).flat().raw(), [1, 2, 3], "Err 3");
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("flat 2", "Basic Monadic", false).run = function(){
@@ -447,6 +520,7 @@ new JSUnit.Test("flat 2", "Basic Monadic", false).run = function(){
 			.raw(), 
 		["abc", "zyx", "def", "str"]
 	);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("page", "Basic Monadic").run = function(){
@@ -456,6 +530,7 @@ new JSUnit.Test("page", "Basic Monadic").run = function(){
 	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 3).raw(), [7, 8, 9]);
 	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 4).raw(), [10]);
 	this.assert(JDB([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).page(3, 5).raw(), []);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("index", "Basic Monadic").run = function(){
@@ -476,11 +551,13 @@ new JSUnit.Test("index", "Basic Monadic").run = function(){
 	});
 	this.assert(JDB("a;b;c".split(";")).index(function(x){return x;}, function(x, i){return i;}).raw(), {a:0, b:1, c:2});
 	this.assert(JDB(["a", "b", "c", "a"]).index().raw(), {a:"a", b:"b", c:"c"});
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("keys", "Basic Monadic").run = function(){
 	var obj = {x:3, y:5, z:'slls'};
 	this.assert(JDB(obj).keys().raw(), ["x", "y", "z"]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 
@@ -504,13 +581,14 @@ new JSUnit.Test("groupBy", "Basic Monadic").run = function(){
 		],
 		200:[{salary:200, nm:"Phill"}],
 	});
+	this.assert(true, false, "Проверить мутацию");
 }
 
-new JSUnit.Test("extend", "Basic Monadic").run = function(){
+new JSUnit.Test("Extend", "Basic Monadic").run = function(){
 	var coll = {
 		1:{id:1, nm:"John"}
 	};
-	this.assert(JDB(coll).extend({
+	this.assert(JDB(coll).Extend({
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	}).raw(), {
@@ -518,7 +596,7 @@ new JSUnit.Test("extend", "Basic Monadic").run = function(){
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	});
-	this.assert(JDB(coll).extend(JDB({
+	this.assert(JDB(coll).Extend(JDB({
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	})).raw(), {
@@ -526,15 +604,19 @@ new JSUnit.Test("extend", "Basic Monadic").run = function(){
 		2:{id:2, nm:"Phill"},
 		3:{id:3, nm:"James"}
 	});
+	this.assert(coll, {
+		1:{id:1, nm:"John"}
+	});
+	this.assert(true, false, "Проверить мутацию");
 }
 
-new JSUnit.Test("extend deep", "Basic Monadic").run = function(){
+new JSUnit.Test("Extend deep", "Basic Monadic").run = function(){
 	var coll = {
 		1:{name:"John", salary:300},
 		2:{name:"Phill", salary:500},
 		3:{name:"James", salary:400}
 	};
-	var res = JDB(coll).extend({
+	var res = JDB(coll).Extend({
 		1:{salary:600}
 	}, true).raw();
 	this.assert(res, {
@@ -542,12 +624,14 @@ new JSUnit.Test("extend deep", "Basic Monadic").run = function(){
 		2:{name:"Phill", salary:500},
 		3:{name:"James", salary:400}
 	});
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("concat", "Basic Monadic").run = function(){
 	var coll = [1, 2, 3];
 	this.assert(JDB(coll).concat([4, 5]).raw(), [1, 2, 3, 4, 5]);
 	this.assert(JDB(coll).concat(JDB([4, 5])).raw(), [1, 2, 3, 4, 5]);
+	this.assert(coll, [1, 2, 3])
 }
 
 new JSUnit.Test("toArray", "Basic Monadic").run = function(){
@@ -570,6 +654,7 @@ new JSUnit.Test("toArray", "Basic Monadic").run = function(){
 		{id:2, nm:"Phill"},
 		{id:3, nm:"James"}
 	]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("treeToArray", "Basic Monadic").run = function(){
@@ -589,6 +674,7 @@ new JSUnit.Test("treeToArray", "Basic Monadic").run = function(){
 	this.assert(JDB(tree).treeToArray("children", "nm").raw(), [
 		"library", "scifi", "classics", "russian", "Pushkin", "Tolstoy"
 	]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("sort", "Basic Monadic").run = function(){
@@ -609,11 +695,13 @@ new JSUnit.Test("sort", "Basic Monadic").run = function(){
 		{salary:100, nm:"John"},
 		{salary:200, nm:"Phill"}
 	]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("reverse", "Basic Monadic").run = function(){
 	var coll = [1, 2, 3, 4];
 	this.assert(JDB(coll).reverse().raw(), [4, 3, 2, 1]);
+	this.assert(true, false, "Проверить мутацию");
 }
 
 new JSUnit.Test("Dictionary", "Containers").run = function(){

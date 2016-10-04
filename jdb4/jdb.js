@@ -59,6 +59,22 @@ var JDB = (function(){
 		return res;
 	}
 	
+	function Map(coll, F){
+		F = lambda(F);
+		if(coll instanceof Array){
+			for(var i=0; i<coll.length; i++){
+				coll[i] = F(coll[i], i, i);
+			}
+		}
+		else{
+			var idx = 0;
+			for(var k in coll){
+				coll[k] = F(coll[k], k, idx++);
+			}
+		}
+		return coll;
+	}
+	
 	function select(coll, F){
 		F = lambda(F);
 		var res;
@@ -243,6 +259,7 @@ var JDB = (function(){
 					return this;
 				},
 				map: function(F){return JDB(map(coll, F));},
+				Map: function(F){return JDB(Map(coll, F));},
 				each: function(F){each(coll, F); return this;},
 				aggregate: function(initial, F){return aggregate(coll, initial, F)},
 				select: function(F){return JDB(select(coll, F));},
@@ -252,7 +269,7 @@ var JDB = (function(){
 				index: function(F, Fobj){return JDB(index(coll, F, Fobj));},
 				keys: function(){return JDB(keys(coll));},
 				groupBy: function(F){return JDB(groupBy(coll, F));},
-				extend: function(c2, deep){
+				Extend: function(c2, deep){
 					if(typeof(c2.raw)=="function") c2 = c2.raw();
 					res = typeof(coll.raw)=="function"?coll.raw():coll;
 					// each(coll, function(e,k){res[k] = e;});
@@ -272,6 +289,8 @@ var JDB = (function(){
 				}
 			};
 		})();
+		
+		console.log("compatible: ", JDB.compatible());
 		return mon;
 	}
 	
@@ -320,6 +339,8 @@ var JDB = (function(){
 				var $D = function(x){return JDB(x);}
 				extend($D, interfaces[k]);
 				//$D.version = function(){return num;}
+				$D.compatible = function(){return num};
+				
 				return $D;
 			}
 		}
@@ -330,6 +351,7 @@ var JDB = (function(){
 	
 	var interfaces = {
 		"3.0.1": {
+				compatible: function(){return "3.0.1"},
 				version: version,
 				extend: extend,
 				each: each,
@@ -352,10 +374,12 @@ var JDB = (function(){
 	};
 	interfaces[topVersion] = {
 		version: version,
-		extend: extend,
+		compatible: function(){return topVersion;},
+		Extend: extend,
 		each: each,
 		aggregate: aggregate,
 		map: map,
+		Map: Map,
 		select: select,
 		first: first,
 		flat: flat,
