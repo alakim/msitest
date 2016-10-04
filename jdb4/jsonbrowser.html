@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>JSON Data Browser</title>
+	<script type="text/javascript" src="lib/html.js"></script>
+	<script type="text/javascript" src="jdb.js"></script>
+	<script type="text/javascript" src="lib/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="lib/jsonbrowser.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			//JsonBrowser.init(".browser", DB.prototype.jsondata);
+			$("#btLoadUrl").click(function(){
+				var url = $("#tbUrl").val();
+				console.log("loading from ", url);
+				$.get(url, {}, function(data){
+					console.log(data);
+				});
+			});
+			$("#btLoadJSON").click(function(){
+				var json = $("#tbJson").val();
+				var strict = $("#cbStrict")[0].checked;
+				try{
+					if(strict)
+						json = JSON.parse(json);
+					else
+						json = (new Function("return "+json+";"))();
+					
+				} catch(e){
+					alert("Ошибка парсинга JSON: " + e);
+					console.log("Ошибка парсинга JSON: ", e);
+				}
+				JsonBrowser.init(".browser", json);
+			});
+			
+		});
+	</script>
+
+</head>
+<body>
+	<h1>JSON Data Browser</h1>
+	<p><a href="doc.htm" target="_blank">JDB Reference</a></p>
+	<table>
+		<!--tr>
+			URL:
+			<input type="text" id="tbUrl"/> 
+			<input type="button" id="btLoadUrl" value="Load"/>
+		</tr-->
+		<tr>
+			<td><span class="name">JSON</span> data = </td> 
+			<td>
+				<textarea id="tbJson" style="width:500px; height:30px;"></textarea>
+				strict mode: <input type="checkbox" id="cbStrict"/>
+				<input type="button" id="btLoadJSON" value="Load"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="name">JDB Query</span>
+				<div class="hint">e.g. JDB(data).map("x|x*2").raw()</div>
+			</td>
+			<td>
+				<textarea id="tbQuery" style="width:500px; height:30px;">JDB(data).raw()</textarea>
+				<input type="button" class="btExecQuery" disabled="true" value="Exec"/>
+			</td>
+		</tr>
+		<tr>
+			<td><span class="name">Result</span></td>
+			<td>
+				<textarea id="tbJsonRes" readonly="true" style="width:500px; height:30px;"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td width="250">
+				<span class="name">Transformation Rule</span>
+				<div class="hint">e.g. function(data){with(Html){return div(apply(data, function(v){return p("v: ", v.v);}));}}</div>
+			</td>
+			<td>
+				<textarea id="tbTransformRule" style="width:500px; height:30px;"></textarea>
+				<input type="button" class="btTransform" disabled="true" value="Apply"/>
+			</td>
+		</tr>
+		<tr><td colspan="2"><textarea id="tbTransformRes" style="width:100%; height:30px;"></textarea></td></tr>
+	</table>
+	<div class="browser"></div>
+</body>
+</html>
