@@ -149,7 +149,7 @@ var Html = {
 		}
 	});
 	
-	defineTags(["div", "a", "p", "span", "nobr", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "optgroup", "h1", "h2", "h3", "h4", "h5", "h6", "button", "form","dl", "dt","dd"]);
+	defineTags(["div", "a", "p", "span", "nobr", "ul", "ol", "li", "table", "tbody", "thead", "tr", "input", "label", "textarea", "pre", "select", "option", "optgroup", "h1", "h2", "h3", "h4", "h5", "h6", "button", "form","dl", "dt", "dd", "svg"]);
 	defineSelfClosingTags(["img", "hr", "br", "iframe"]);
 	defineNotEmptyTags(["th", "td"]);
 	
