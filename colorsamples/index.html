@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<style type="text/css">
+		body{
+			font-family:Verdana, Arial, Sans-Serif;
+			font-size:14px;
+		}
+		div.palette{
+			width:50px;
+			height:50px;
+			margin:5px;
+			display:inline-block;
+		}
+	</style>
+	<script src="tinycolor-min.js"></script>
+	<script src="lib/html.js"></script>
+	<script src="lib/jquery-1.11.0.min.js"></script>
+	<script>
+		var baseColor = '#080';
+		var colors = [
+			tinycolor(baseColor).lighten(50)
+		];
+		var triad = tinycolor(baseColor).lighten(60).desaturate(60).triad();
+		
+		var colorsCount = 16;
+		var colorSet = [];
+		for(var i=0; i<colorsCount; i++){
+			colorSet.push(tinycolor(baseColor).lighten(50).desaturate(50).spin(i*360/colorsCount));
+		}
+
+		$(function(){
+			$('#out').html((function(){with(Html){
+				return div(
+					div(
+						div({'class':'palette', 'style':'background:'+baseColor}),
+						div({'class':'palette', 'style':'background:'+colors[0]})
+					),
+					div(
+						div({'class':'palette', 'style':'background:'+triad[0]}),
+						div({'class':'palette', 'style':'background:'+triad[1]}),
+						div({'class':'palette', 'style':'background:'+triad[2]})
+					),
+					div(
+						repeat(colorsCount, function(i){
+							return div({'class':'palette', style:'background:'+colorSet[i-1]});
+						})
+					)
+				);
+			}})());	
+		});
+	</script>
+</head>
+<body>
+	<div id="out"></div>
+</body>
+</html>
