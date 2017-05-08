@@ -22,6 +22,33 @@
 	<script src="lib/snap.svg-min.js"></script>
 	<script src="animator.js"></script>
 	<script>
+		Animator.addMode('simple', function(el){
+			var speed = 1;
+			var random = Animator.random;
+			this.svgEl = el;
+			this.x = 0;
+			this.y = 0;
+			this.space = {x:30, y:30}
+			
+			this.animate = function(dT){
+				this.x += dT*speed*random();
+				if(this.x<-this.space.x) this.x = -this.space.x;
+				else if(this.x>this.space.x) this.x = this.space.x;
+				
+				this.y += dT*speed*random();
+				if(this.y<-this.space.y) this.y = -this.space.y;
+				else if(this.y>this.space.y) this.y = this.space.y;
+				
+				var tr1 = [
+					't',
+					this.x,
+					',',
+					this.y
+				].join('');
+				this.svgEl.transform(tr1);
+			};
+		});
+
 		$(function(){
 			$('.svgout').each(function(i, bnr){
 				Animator.addBanner(bnr);
@@ -35,6 +62,7 @@
 	<div class="ribbon">
 		<svg class="svgout" data-src="banner.svg" data-mode="brownian"></svg>
 		<svg class="svgout" data-src="banner.svg" data-mode="floating"></svg>
+		<svg class="svgout" data-src="banner.svg" data-mode="simple"></svg>
 	</div>
 </body>
 </html>

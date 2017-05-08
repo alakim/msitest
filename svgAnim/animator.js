@@ -6,7 +6,8 @@ var Animator = (function($,$S){
 		speed = 1e-1,
 		size = {w:400, h: 250};
 	
-	var banners = [];
+	var banners = [],
+		modes = {};
 
 	function Animator(){
 		this.busy = false;
@@ -20,8 +21,7 @@ var Animator = (function($,$S){
 			var coll = snp.selectAll('.icon');
 			for(var el,i=0; el=coll[i],i<coll.length; i++){
 				animatedItems.push(
-					animationType=='floating'? new FloatingItem(el)
-						:new BrownianItem(el)
+					new (modes[animationType])(el)
 				);
 			}
 		}
@@ -76,7 +76,7 @@ var Animator = (function($,$S){
 		return Math.random()*2 - 1;
 	}
 
-	function FloatingItem(el){
+	modes['floating'] = function(el){
 		this.svgEl = el;
 		this.x = 0;
 		this.y = 0;
@@ -106,9 +106,10 @@ var Animator = (function($,$S){
 			].join('');
 			this.svgEl.transform(tr1);
 		};
-	}
+	};
 
-	function BrownianItem(el){
+
+	modes['brownian'] = function(el){
 		this.svgEl = el;
 		this.x = 0;
 		this.y = 0;
@@ -131,7 +132,7 @@ var Animator = (function($,$S){
 			].join('');
 			this.svgEl.transform(tr1);
 		};
-	}
+	};
 	
 	function hoverin(bnrIdx){
 		animator.start(bnrIdx);
@@ -163,7 +164,13 @@ var Animator = (function($,$S){
 		});
 	}
 
+	function addMode(id, f){
+		modes[id] = f;
+	}
+
 	return {
-		addBanner: addBanner
+		random: random,
+		addBanner: addBanner,
+		addMode: addMode
 	};
 })(jQuery, Snap);
